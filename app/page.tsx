@@ -1,4 +1,6 @@
+"use client"
 import TranspItem from "@/components/TranspItem";
+import { useEffect, useState } from "react";
 
 interface Carrier {
   name: string;
@@ -15,8 +17,22 @@ const carriers: Carrier[] = [
 ];
 
 export default function Home() {
+  const [now, setNow] = useState(new Date());
+
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setNow(new Date());
+    }, 1000);
+
+    return () => clearInterval(interval);
+  }, []);
+
+
   return (
     <div>
+      {
+        now.toLocaleTimeString()
+      }
       {
         carriers.map(carrier => (
           <TranspItem key={carrier.name} nomeTransp={carrier.name} horarioCorte={carrier.departureTime}/>
