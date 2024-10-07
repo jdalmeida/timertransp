@@ -13,20 +13,11 @@ export default function TranspItem({
 }: TranspItemProps) {
   const [currentTime, setCurrentTime] = useState<Date>(new Date());
   const [timeRemaining, setTimeRemaining] = useState<number>();
+  const [onTime, setOnTime] = useState<boolean>(false);
 
   const playAlertSound = () => {
     const audio = new Audio("/audio.mp3");
     audio.play().catch((error) => console.error("Erro ao tocar o áudio:", error));
-  };
-
-  // Função para calcular o tempo restante
-  const calculateTimeRemaining = (departureTime: string): number => {
-    const [hours, minutes] = departureTime.split(":").map(Number);
-    const departure = new Date();
-    departure.setHours(hours, minutes, 0, 0);
-
-    const diffMs = departure.getTime() - currentTime.getTime();
-    return Math.round(diffMs / 60000); // Retorna o tempo restante em minutos
   };
 
   // Função para formatar o tempo restante em HH:MM
@@ -38,24 +29,38 @@ export default function TranspItem({
       .padStart(2, "0")}`;
   };
 
-  // Atualiza a cada minuto
+  // Função para calcular o tempo restante
+  const calculateTimeRemaining = (departureTime: string): number => {
+    const [hours, minutes] = departureTime.split(":").map(Number);
+    const departure = new Date();
+    departure.setHours(hours, minutes, 0, 0);
+
+    const diffMs = departure.getTime() - new Date().getTime(); // Comparando com o tempo atual
+    return Math.round(diffMs / 60000); // Retorna o tempo restante em minutos
+  };
+
   useEffect(() => {
+    // Atualiza o tempo restante e o tempo atual a cada minuto
     const timer = setInterval(() => {
       setCurrentTime(new Date());
-    }, 60000); // Atualiza a cada minuto
-    const timeRemaining = calculateTimeRemaining(horarioCorte);
-    setTimeRemaining(timeRemaining);
+      const timeRemaining = calculateTimeRemaining(horarioCorte);
+      setTimeRemaining(timeRemaining);
+    }, 60000); // Atualiza a cada minuto (60000ms = 1 minuto)
+
+    // Calcular imediatamente na primeira renderização
+    setTimeRemaining(calculateTimeRemaining(horarioCorte));
+
     return () => clearInterval(timer);
   }, [horarioCorte]);
 
   // Efeito para verificar se precisa tocar o áudio
   useEffect(() => {
-    if (timeRemaining === 60) {
-      setTimeout(() => playAlertSound(), 100);
-    } else if (timeRemaining === 30) {
-      setTimeout(() => playAlertSound(), 100);
-    } else if (timeRemaining === 15) {
-      setTimeout(() => playAlertSound(), 100);
+    if (timeRemaining === 60 || timeRemaining === 30 || timeRemaining === 15) {
+      setTimeout(() => {
+        playAlertSound();
+        setOnTime(true);
+      }, 100);
+      setTimeout(() => setOnTime(false), 20000); // Exibir por 20 segundos
     }
   }, [timeRemaining]);
 
@@ -68,6 +73,19 @@ export default function TranspItem({
         </h2>
       ) : (
         <h2 className="text-xl text-red-500 mt-2">A transportadora já saiu.</h2>
+      )}
+      {onTime && (
+        <div className="h-[99dvh] absolute z-10 top-0 w-[96%] mx-auto p-2 bg-red-600 rounded-xl">
+          <div className="h-full bg-white shadow-lg flex flex-col animate-pulse justify-center items-center rounded-lg p-6">
+            <h1 className="text-9xl font-black text-black">
+              {nomeTransp}
+            </h1>
+            <h1 className="text-4xl font-black text-red-600">
+              Faltam {formatTime(timeRemaining!)} para a transportadora sair!
+            </h1>
+          </div>
+          <p className="hidden">{currentTime.toLocaleTimeString()}</p>
+        </div>
       )}
     </div>
   );

@@ -29,15 +29,17 @@ export default function Home() {
 
 
   return (
-    <div>
-      {
-        now.toLocaleTimeString()
-      }
+    <div className="p-4">
       {
         carriers.map(carrier => (
           <TranspItem key={carrier.name} nomeTransp={carrier.name} horarioCorte={carrier.departureTime}/>
         ))
       }
+      <span className="w-full flex justify-center text-3xl font-mono font-extrabold">
+        {
+          now.toLocaleTimeString()
+        }
+      </span>
     </div>
   );
 }

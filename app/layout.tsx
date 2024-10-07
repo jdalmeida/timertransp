@@ -12,8 +12,8 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en">
-      <body>
+    <html lang="pt-br">
+      <body className="bg-zinc-950 transition-all ease-in-out duration-500">
         {children}
       </body>
     </html>
