@@ -60,7 +60,6 @@ export default function TranspItem({
         playAlertSound();
         setOnTime(true);
       }, 100);
-      setTimeout(() => setOnTime(false), 20000); // Exibir por 20 segundos
     }
   }, [timeRemaining]);
 
