@@ -12,8 +12,8 @@ const carriers: Carrier[] = [
   { name: 'TW', departureTime: '17:00' },
   { name: 'São Miguel', departureTime: '18:30' },
   { name: 'Fritz', departureTime: '18:45' },
-  { name: 'Santa Cruz', departureTime: '20:30' },
   { name: 'Leomar', departureTime: '20:00' },
+  { name: 'Santa Cruz', departureTime: '20:30' },
 ];
 
 const convertToDate = (time: string, now: Date): Date => {
@@ -74,7 +74,7 @@ export default function Home() {
     <div className="p-4 flex flex-row gap-4">
       <div className="w-3/4">
         {nextCarrier ? (
-          <div className="flex flex-col gap-10 justify-center items-center p-4 bg-red-500 h-full rounded">
+          <div className="text-white flex flex-col gap-10 justify-center items-center p-4 bg-red-500 h-full rounded">
               <h2 className="text-3xl font-bold">Próxima transportadora:</h2>
               <p className="text-9xl font-black">{nextCarrier.name}</p>
               <p className="text-9xl font-bold">
@@ -94,7 +94,7 @@ export default function Home() {
             <TranspItem key={carrier.name} nomeTransp={carrier.name} horarioCorte={carrier.departureTime}/>
           ))
         }
-        <span className="w-full flex justify-center text-3xl font-mono font-extrabold">
+        <span className="w-full flex justify-center text-3xl font-mono font-extrabold text-white">
           {
             now.toLocaleTimeString()
           }

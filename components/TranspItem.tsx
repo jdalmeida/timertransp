@@ -17,6 +17,7 @@ export default function TranspItem({
 
   const playAlertSound = () => {
     const audio = new Audio("/audio.mp3");
+    audio.volume = 2;
     audio.play().catch((error) => console.error("Erro ao tocar o áudio:", error));
   };
 
@@ -59,33 +60,36 @@ export default function TranspItem({
       setTimeout(() => {
         playAlertSound();
         setOnTime(true);
+        setTimeout(()=> setOnTime(false), 20000)
       }, 100);
     }
   }, [timeRemaining]);
 
   return (
-    <div className="bg-white shadow-lg rounded-lg p-6 mb-4">
-      <h1 className="text-2xl font-semibold text-gray-800">{nomeTransp}</h1>
-      {timeRemaining !== undefined && timeRemaining >= 0 ? (
-        <h2 className="text-xl text-green-600 mt-2">
-          {formatTime(timeRemaining)} para a saída
-        </h2>
-      ) : (
-        <h2 className="text-xl text-red-500 mt-2">A transportadora já saiu.</h2>
-      )}
-      {onTime && (
-        <div className="h-[99dvh] absolute z-10 top-0 w-[96%] mx-auto p-2 bg-red-600 rounded-xl">
-          <div className="h-full bg-white shadow-lg flex flex-col animate-pulse justify-center items-center rounded-lg p-6">
-            <h1 className="text-9xl font-black text-black">
-              {nomeTransp}
-            </h1>
-            <h1 className="text-4xl font-black text-red-600">
-              Faltam {formatTime(timeRemaining!)} para a transportadora sair!
-            </h1>
+    <>
+      <div className="bg-white shadow-lg rounded-lg p-6 mb-4">
+        <h1 className="text-2xl font-semibold text-gray-800">{nomeTransp} | {horarioCorte}</h1>
+        {timeRemaining !== undefined && timeRemaining >= 0 ? (
+          <h2 className="text-xl text-green-600 mt-2">
+            {formatTime(timeRemaining)} para a saída
+          </h2>
+        ) : (
+          <h2 className="text-xl text-red-500 mt-2">A transportadora já saiu.</h2>
+        )}
+      </div>
+        {onTime && (
+          <div className={`h-[99dvh] absolute z-[-${horarioCorte.replace(':', '')}] left-0 top-0 w-[96%] mx-auto p-2 bg-red-600 rounded-xl`}>
+            <div className="h-full bg-white shadow-lg flex flex-col animate-pulse justify-center items-center rounded-lg p-6">
+              <h1 className="text-9xl font-black text-black">
+                {nomeTransp}
+              </h1>
+              <h1 className="text-4xl font-black text-red-600">
+                Faltam {formatTime(timeRemaining!)} para a transportadora sair!
+              </h1>
+            </div>
+            <p className="hidden">{currentTime.toLocaleTimeString()}</p>
           </div>
-          <p className="hidden">{currentTime.toLocaleTimeString()}</p>
-        </div>
-      )}
-    </div>
+        )}
+      </>
   );
 }
