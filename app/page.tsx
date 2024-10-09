@@ -9,9 +9,11 @@ interface Carrier {
 
 // Lista de transportadoras e horários de saída
 const carriers: Carrier[] = [
+  { name: 'Fritz Rápido', departureTime: '11:45' },
   { name: 'TW', departureTime: '17:00' },
   { name: 'São Miguel', departureTime: '18:30' },
-  { name: 'Fritz', departureTime: '18:45' },
+  { name: 'City', departureTime: '18:45' },
+  { name: 'Fritz', departureTime: '19:30' },
   { name: 'Leomar', departureTime: '20:00' },
   { name: 'Santa Cruz', departureTime: '20:30' },
 ];

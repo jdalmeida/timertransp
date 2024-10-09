@@ -58,8 +58,8 @@ export default function TranspItem({
   useEffect(() => {
     if (timeRemaining === 60 || timeRemaining === 30 || timeRemaining === 15) {
       setTimeout(() => {
-        playAlertSound();
         setOnTime(true);
+        playAlertSound();
         setTimeout(()=> setOnTime(false), 20000)
       }, 100);
     }
