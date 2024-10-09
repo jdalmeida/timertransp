@@ -57,6 +57,14 @@ export default function Home() {
   const [nextCarrier, setNextCarrier] = useState<Carrier | null>(null);
   const [timeLeft, setTimeLeft] = useState<string>("");
 
+  const requestNotificationPermission = () => {
+    if (Notification.permission === 'default') {
+      Notification.requestPermission();
+    }
+  };
+
+  requestNotificationPermission();
+
   useEffect(() => {
     const interval = setInterval(() => {
       setNow(new Date());

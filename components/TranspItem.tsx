@@ -7,6 +7,36 @@ interface TranspItemProps {
   horarioCorte: string;
 }
 
+const playAlertSound = () => {
+  const audio = new Audio("/audio.mp3");
+  audio.play().catch((error) => console.error("Erro ao tocar o áudio:", error));
+};
+
+// Função para formatar o tempo restante em HH:MM
+const formatTime = (minutes: number): string => {
+  const hours = Math.floor(minutes / 60);
+  const remainingMinutes = minutes % 60;
+  return `${hours.toString().padStart(2, "0")}:${remainingMinutes
+    .toString()
+    .padStart(2, "0")}`;
+};
+
+// Função para calcular o tempo restante
+const calculateTimeRemaining = (departureTime: string): number => {
+  const [hours, minutes] = departureTime.split(":").map(Number);
+  const departure = new Date();
+  departure.setHours(hours, minutes, 0, 0);
+
+  const diffMs = departure.getTime() - new Date().getTime(); // Comparando com o tempo atual
+  return Math.round(diffMs / 60000); // Retorna o tempo restante em minutos
+};
+
+const sendNotification = (nomeTransp: string, timeRemaining: string) => {
+  if (Notification.permission === 'granted' && document.hidden) {
+    new Notification(`Transportadora ${nomeTransp} saíndo em ${timeRemaining}`);
+  }
+};
+
 export default function TranspItem({
   nomeTransp,
   horarioCorte,
@@ -15,38 +45,13 @@ export default function TranspItem({
   const [timeRemaining, setTimeRemaining] = useState<number>();
   const [onTime, setOnTime] = useState<boolean>(false);
 
-  const playAlertSound = () => {
-    const audio = new Audio("/audio.mp3");
-    audio.volume = 2;
-    audio.play().catch((error) => console.error("Erro ao tocar o áudio:", error));
-  };
-
-  // Função para formatar o tempo restante em HH:MM
-  const formatTime = (minutes: number): string => {
-    const hours = Math.floor(minutes / 60);
-    const remainingMinutes = minutes % 60;
-    return `${hours.toString().padStart(2, "0")}:${remainingMinutes
-      .toString()
-      .padStart(2, "0")}`;
-  };
-
-  // Função para calcular o tempo restante
-  const calculateTimeRemaining = (departureTime: string): number => {
-    const [hours, minutes] = departureTime.split(":").map(Number);
-    const departure = new Date();
-    departure.setHours(hours, minutes, 0, 0);
-
-    const diffMs = departure.getTime() - new Date().getTime(); // Comparando com o tempo atual
-    return Math.round(diffMs / 60000); // Retorna o tempo restante em minutos
-  };
-
   useEffect(() => {
     // Atualiza o tempo restante e o tempo atual a cada minuto
     const timer = setInterval(() => {
       setCurrentTime(new Date());
       const timeRemaining = calculateTimeRemaining(horarioCorte);
       setTimeRemaining(timeRemaining);
-    }, 60000); // Atualiza a cada minuto (60000ms = 1 minuto)
+    }, 1000);
 
     // Calcular imediatamente na primeira renderização
     setTimeRemaining(calculateTimeRemaining(horarioCorte));
@@ -56,14 +61,16 @@ export default function TranspItem({
 
   // Efeito para verificar se precisa tocar o áudio
   useEffect(() => {
+  
     if (timeRemaining === 60 || timeRemaining === 30 || timeRemaining === 15) {
       setTimeout(() => {
-        setOnTime(true);
         playAlertSound();
+        setOnTime(true);
+        sendNotification(nomeTransp, timeRemaining.toString());
         setTimeout(()=> setOnTime(false), 20000)
       }, 100);
     }
-  }, [timeRemaining]);
+  }, [nomeTransp, timeRemaining]);
 
   return (
     <>
