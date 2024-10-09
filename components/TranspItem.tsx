@@ -31,11 +31,11 @@ const calculateTimeRemaining = (departureTime: string): number => {
   return Math.round(diffMs / 60000); // Retorna o tempo restante em minutos
 };
 
-const sendNotification = (nomeTransp: string, timeRemaining: string) => {
-  if (Notification.permission === 'granted' && document.hidden) {
-    new Notification(`Transportadora ${nomeTransp} saíndo em ${timeRemaining}`);
-  }
-};
+// const sendNotification = (nomeTransp: string, timeRemaining: string) => {
+//   if (Notification.permission === 'granted' && document.hidden) {
+//     new Notification(`Transportadora ${nomeTransp} saíndo em ${timeRemaining}`);
+//   }
+// };
 
 export default function TranspItem({
   nomeTransp,
@@ -66,7 +66,7 @@ export default function TranspItem({
       setTimeout(() => {
         playAlertSound();
         setOnTime(true);
-        sendNotification(nomeTransp, timeRemaining.toString());
+        //sendNotification(nomeTransp, timeRemaining.toString());
         setTimeout(()=> setOnTime(false), 20000)
       }, 100);
     }

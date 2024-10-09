@@ -57,13 +57,13 @@ export default function Home() {
   const [nextCarrier, setNextCarrier] = useState<Carrier | null>(null);
   const [timeLeft, setTimeLeft] = useState<string>("");
 
-  const requestNotificationPermission = () => {
-    if (Notification.permission === 'default') {
-      Notification.requestPermission();
-    }
-  };
+  // const requestNotificationPermission = () => {
+  //   if (Notification.permission === 'default') {
+  //     Notification.requestPermission();
+  //   }
+  // };
 
-  requestNotificationPermission();
+  // requestNotificationPermission();
 
   useEffect(() => {
     const interval = setInterval(() => {
